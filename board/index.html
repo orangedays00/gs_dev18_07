@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <?php
   $webRoot = $_SERVER['DOCUMENT_ROOT'];
+
+  include_once($webRoot . "/board/src/function.php");
+
+  $search = h($_POST["search"]);
+
+  $searchList = getSearchList($search);
+
 ?>
 <html lang="ja">
-  <?php include_once($webRoot . "/board/src/function.php"); ?>
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,12 +38,26 @@
               <section class="threadList">
 
                 <h3>新しくスレッドを立てたい方は<a href="new/">こちら</a>から投稿してください。</h3>
+
+                <div class="search-area">
+                  <p class="search-label">絞り込み検索</p>
+                  <form action="" method="POST" class="search-form">
+                    <input type="text" name="search" id="search" placeholder="キーワードで返信メッセージを絞り込めます" class="search-keyword">
+                    <input type="submit" name="submit" value="絞り込む" class="btn btn-primary search-btn">
+                  </form>
+                </div>
                 <?php
-                    /** スレッド情報を全件取得 */
-                    $results = getFullThread();
-                    /** 1件ずつスレッドを出力する */
-                    foreach($results as $result){
-                        outThreadList($result);
+                    if(!empty($searchList)) {
+                      foreach($searchList as $list){
+                        outThreadList($list);
+                      }
+                    }else{
+                      /** スレッド情報を全件取得 */
+                      $results = getFullThread();
+                      /** 1件ずつスレッドを出力する */
+                      foreach($results as $result){
+                          outThreadList($result);
+                      }
                     }
                 ?>
                 </section>

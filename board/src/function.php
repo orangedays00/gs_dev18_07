@@ -192,4 +192,21 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
 return $result;
 }
+
+
+function getSearchList($search) {
+    $sql = "SELECT TD.thread_id, TD.title, TD.updateTime
+            FROM gs_thread_data TD,
+                 gs_res_data RD
+            WHERE TD.thread_id = RD.thread_id AND
+                    TD.disabledFlg != 1 AND
+                    RD.message LIKE '%" . $search . "%'
+            GROUP BY TD.thread_id
+            ORDER BY TD.updateTime DESC, TD.thread_id";
+    $stmt = getDbh()->prepare($sql);
+    $stmt->execute();
+    $searchResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $searchResult;
+}
+
 ?>
